@@ -4,7 +4,9 @@ from player import Player
 from collections import OrderedDict
 import world
 import time
+import random
 import os
+import sys
 
 def get_available_actions(room, player):
     actions = OrderedDict()
@@ -86,44 +88,8 @@ def play():
             """)
             time.sleep(5)
 
-def fade_text(text):
-    print(colored(text, 'orange'))
-    print(colored(text, 'green'))
-
-# Python program to print 
-# red text with green background 
-
-print(Fore.RED + 'some red text') 
-print(Back.GREEN + 'and with a green background') 
-print(Style.DIM + 'and in dim text') 
-print(Style.RESET_ALL) 
-print('back to normal now') 
-
-
-def intro():
-    os.system('clear')
+def fade_text():
     intro_title = """
-    
-           __  __ _                            __ _     _____                                             
-          |  \/  (_)                          / _| |   |  __ \                                          _ 
-          | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
-          | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
-          | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
-          |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
-                                                                            __/ |                        
-            _______                                   _              _      |____/ 
-           |__   __| |              /\               | |            (_)                              
-              | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
-              | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
-              | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
-              |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
-                                                                              __/ |                        
-                                                                             |____/                         
-    """
-    
-    time.sleep(5)
-    os.system('clear')
-    print("""
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                           OOOOOOOkkkkkkkkkOOOOOOOOkkkkkkkkkOOOOOOO
@@ -142,6 +108,122 @@ def intro():
                           OOOOOOOkkkkkkkkkOOOOOOOOkkkkkkkkkOOOOOOO
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-    """)
+    """
 
-intro()
+    print_text = intro_title
+    original_color_r = 255
+    original_color_g = 119
+    original_color_b = 0
+    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+    time.sleep(3)
+    for i in range(30,51):
+        print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        time.sleep(.1)
+        os.system('clear')
+        original_color_r = original_color_r - 10
+        original_color_g = original_color_g - 5
+        original_color_b = original_color_b
+    time.sleep(1)
+    intro_title = """
+    
+           __  __ _                            __ _     _____                                             
+          |  \/  (_)                          / _| |   |  __ \                                          _ 
+          | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
+          | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
+          | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
+          |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
+                                                                            __/ |                        
+            _______                                   _              _     |____/ 
+           |__   __| |              /\               | |            (_)                              
+              | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
+              | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
+              | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
+              |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
+                                                                              __/ |                        
+                                                                             |____/                         
+    """
+    for i in range(30,51):
+        print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        time.sleep(.1)
+        os.system('clear')
+        original_color_r = original_color_r + 10
+        original_color_g = original_color_g + 5
+        original_color_b = original_color_b
+    print('\033[38;2;255;119;0m' + intro_title)
+
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN + Style.BRIGHT + '█', printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
+
+def loadProgressBar():
+    items = list(range(0, 23))
+    l = len(items)
+    # Initial call to print 0% progress
+    printProgressBar(0, l, prefix = 'Loading Assets...', suffix = 'Loaded', length = 40)
+    for i, item in enumerate(items):
+        time.sleep(random.random())
+        printProgressBar(i + 1, l, prefix = '                      Loading...', suffix = 'Loaded', length = 50)
+    time.sleep(.5)
+
+def intro():
+    os.system('clear')
+    loadProgressBar()
+    os.system('clear')
+    fade_text()
+    while True:
+        print(Style.RESET_ALL)
+        print("S - Start Game")
+        print("C - Controls")
+        print("L - View License")
+        print("Q - Quit")
+        start_menu = input("> ")
+        if start_menu in ['Q', 'q']:
+            break
+            sys.exit()
+        elif start_menu in ['C', 'c']:
+            print("")
+            print("Work In Progress!")
+        elif start_menu in ['L', 'l']:
+            ObjRead = open("LICENSE.txt", "r")
+            txtContent = ObjRead.read(); 
+            print("")
+            print(txtContent)
+        elif start_menu in ['S', 's']:
+            original_color_r = 255
+            original_color_g = 119
+            original_color_b = 0
+            intro_title = """
+            
+                   __  __ _                            __ _     _____                                             
+                  |  \/  (_)                          / _| |   |  __ \                                          _ 
+                  | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
+                  | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
+                  | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
+                  |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
+                                                                                    __/ |                        
+                   _______                                    _              _     |____/ 
+                  |__   __|  |              /\               | |            (_)                              
+                      | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
+                      | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
+                      | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
+                      |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
+                                                                                      __/ |                        
+                                                                                    |____/                         
+            """
+            os.system('clear')
+            for i in range(30,51):
+                print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+                time.sleep(.1)
+                os.system('clear')
+                original_color_r = original_color_r - 10
+                original_color_g = original_color_g - 5
+                original_color_b = original_color_b
+            print(Style.RESET_ALL)
+            play()
+        else:
+            print("Invalid choice!")
