@@ -10,24 +10,23 @@
 
 Minecraft Dungeons Text Adventure Game!
 
-## Version 0.2 Alpha (WIP):
+## Mini Release! 0.3 Alpha!:
+This is just a preview! Not really a release:
 
+- Chests (3 Random Variants!)
+- Better Economy
+- Bosses
+- Map extensions
+- Advanced fighting
 - 4 Weapons
-- 4 Monsters
-- 7 rooms
+- 5 Monsters
+- 1 Boss
+- 11 rooms
 - Currency
 - Advanced Economy
 - Advanced Fighting
 - Abilities!
 - And More!
-
-## Mini Release! 0.3 Alpha!:
-Added some things to the 0.2 Alpha (this is just a preview! Not really a release): 
-- Chests (3 Random Varients!)
-- Better Economy
-- Bosses
-- Map extensions
-- Advanced fighting
 
 ## Repl.it 
 [![Run on Repl.it](https://repl.it/badge/github/Glank/Java-Games)](https://repl.it/@flappymagikarp/Minecraft-Dungeons-The-Awakening)
