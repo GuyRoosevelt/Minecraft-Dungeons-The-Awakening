@@ -1,4 +1,4 @@
-# Minecraft Dungeons The Awakening
+# Minecraft Dungeons: The Awakening
 [![Issues](https://img.shields.io/github/issues/GuyRoosevelt/Minecraft-Dungeons-The-Awakening)](https://github.com/GuyRoosevelt/Minecraft-Dungeons-The-Awakening/issues)
 [![Release](https://img.shields.io/github/v/release/GuyRoosevelt/Minecraft-Dungeons-The-Awakening?include_prereleases)](https://github.com/GuyRoosevelt/Minecraft-Dungeons-The-Awakening/releases)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/GuyRoosevelt/Minecraft-Dungeons-The-Awakening/graphs/commit-activity)
