@@ -232,7 +232,7 @@ def intro():
         print("S - Start Game")
         print("C - Controls")
         print("L - View License")
-        print("Q - Quit")
+        print("Q - Quit game")
         start_menu = input("> ")
         if start_menu in ['Q', 'q']:
             return

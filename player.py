@@ -198,9 +198,8 @@ class Player:
         original_color_r = 255
         original_color_g = 119
         original_color_b = 0
-        print(Style.RESET_ALL)
+        os.system('clear')
         while True:
-            os.system('clear')
             print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
             print(Style.RESET_ALL)
             print("R - Resume")
