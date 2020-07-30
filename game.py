@@ -1,4 +1,4 @@
-iimport colorama
+import colorama
 from colorama import Fore, Style, Back
 from player import Player
 from collections import OrderedDict
