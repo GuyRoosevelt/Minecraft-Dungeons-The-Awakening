@@ -6,13 +6,12 @@ import world
 import time
 import random
 import os
-import sys
 
 def get_available_actions(room, player):
     actions = OrderedDict()
     print("")
     print("Choose an action: ")    action_adder(actions, 'c', player.coords, "View coordinates")
-    action_adder(actions, 'm', menu(), "Open Menu")
+    action_adder(actions, 'm', player.menu, "Open Menu")
     if player.inventory:
         action_adder(actions, 'i', player.print_inventory, "View inventory")
     if isinstance(room, world.TradingNPCs):
@@ -116,8 +115,9 @@ def display_intro_text():
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
-        print("\n" * 80)
+        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        print("\n" * 30)
         time.sleep(.1)
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -129,8 +129,9 @@ def display_intro_text():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     time.sleep(3)
     for i in range(30,51):
-        print("\n" * 80)
+        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        print("\n" * 30)
         time.sleep(.1)
         original_color_r = original_color_r - 10
         original_color_g = original_color_g - 5
@@ -156,8 +157,9 @@ def display_intro_text():
                                                                              |____/                         
     """
     for i in range(30,51):
-        print("\n" * 80)
+        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        print("\n" * 30)
         time.sleep(.1)
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -209,8 +211,9 @@ def intro():
     original_color_g = 0
     original_color_b = 0
     for i in range(30,51):
-        print("\n" * 80)
+        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        print("\n" * 30)
         time.sleep(.1)
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -276,8 +279,9 @@ def intro():
             original_color_b = 0
             os.system('clear')
             for i in range(30,51):
-                print("\n" * 80)
+                print("\n" * 50)
                 print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+                print("\n" * 30)
                 time.sleep(.1)
                 original_color_r = original_color_r - 10
                 original_color_g = original_color_g - 5
@@ -287,60 +291,3 @@ def intro():
             play()
         else:
             print("Invalid choice!")
-
-def menu():
-    original_color_r = 255
-    original_color_g = 119
-    original_color_b = 0
-    os.system('clear')
-    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-    print(Style.RESET_ALL)
-    while True:
-        print(Style.RESET_ALL)
-        print("R - Resume")
-        print("C - Controls")
-        print("L - View License")
-        print("Q - Quit Game")
-        start_menu = input("> ")
-        if start_menu in ['Q', 'q']:
-            sys.exit(0)
-        elif start_menu in ['C', 'c']:
-            while True:
-                print("Would you like to (V)iew controls, (R)ead instructions, or (Q)uit?")
-                controls_prompt = input("> ")
-                if controls_prompt in ['R', 'r']:
-                    print("")
-                    print("Instructions:")
-                    print("")
-                    print("Enter an action on where the input prompts you. Input one of the letters listed. ")
-                    print("The text to the right of the colon describes the actions.")
-                    print("You can only use certain action at certain times.")
-                    print("Normally, the winning tile is near the north, so try to move your character there to win!")
-                    break
-                elif controls_prompt in ['V', 'v']:
-                    print("")
-                    print("Controls:")
-                    print("")
-                    print("c: Views Coordinates")
-                    print("i: Opens Inventory. Inventory can be used to equip weapons. If weapon is not equipped, the strongest weapon is chosen.")
-                    print("n: Moves North. Only usable if player is not impeded.")
-                    print("s: Moves South. Only usable if player is not impeded.")
-                    print("e: Moves East. Only usable if player is not impeded.")
-                    print("w: Moves West. Only usable if player is not impeded.")
-                    print("t: Trades with the NPC. Only usable if player is at a NPC Trader Tile.")
-                    print("o: Opens chest. Only usable if player is at a Chest Tile.")
-                    print("h: Uses items to heal player. Only usable when player is damaged.")
-                    print("a: Uses equipped item to attack an enemy. Only usable if player is on a tile with an enemy that is alive.")
-                    break
-                elif controls_prompt in ['Q', 'q']:
-                    break
-                else:
-                    print("Invalid choice!")
-        elif start_menu in ['L', 'l']:
-            ObjRead = open("LICENSE.txt", "r")
-            txtContent = ObjRead.read(); 
-            print("")
-            print(txtContent)
-        elif start_menu in ['R', 'r']:
-            os.system('clear')
-            return
