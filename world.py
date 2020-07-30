@@ -39,8 +39,6 @@ class VictoryTile(MapTile):
         return """
         You see a bright light in the distance...
         ... it grows as you get closer! It's sunlight!
-
-
         Victory is yours!"""
 
 class EnemyTile(MapTile):
@@ -440,7 +438,18 @@ tile_type_dict = {"VT": VictoryTile,
                   "BS": BlacksmithTile,
                   "NO": None}
 
+lobby_dsl = """
+|RC|RC|VT|RC|RC|
+|RC|RC|RG|RC|RC|
+|NO|NO|RC|NO|NO|
+|RC|RC|ST|RC|RC|
+|RC|RC|EN|NO|FE|
+"""
+
 world_dsl = """
+"""
+
+squidcoast_dsl = """
 |NO|NO|VT|NO|NO|
 |NO|NO|RG|NO|NO|
 |BS|EP|RC|EN|EN|
@@ -470,7 +479,7 @@ start_tile_location = None
 def parse_world_dsl():
     if not is_dsl_valid(world_dsl):
         raise SyntaxError("DSL is invalid!")
-    
+    print(world_dsl)
     dsl_lines = world_dsl.splitlines()
     dsl_lines = [x for x in dsl_lines if x]
 
@@ -484,4 +493,5 @@ def parse_world_dsl():
                 global start_tile_location
                 start_tile_location = x, y
             row.append(tile_type(x, y) if tile_type else None)
+        world_map.append(row)
         world_map.append(row)

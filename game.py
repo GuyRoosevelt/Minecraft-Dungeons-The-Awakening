@@ -10,7 +10,8 @@ import os
 def get_available_actions(room, player):
     actions = OrderedDict()
     print("")
-    print("Choose an action: ")    action_adder(actions, 'c', player.coords, "View coordinates")
+    print("Choose an action: ")
+    action_adder(actions, 'c', player.coords, "View coordinates")
     action_adder(actions, 'm', player.menu, "Open Menu")
     if player.inventory:
         action_adder(actions, 'i', player.print_inventory, "View inventory")
@@ -54,6 +55,7 @@ def choose_action(room, player):
             print("")
 
 def play():
+    world.world_dsl = world.lobby_dsl
     os.system("clear")
     print("Objective: Escape from The Dungeons!")
     world.parse_world_dsl()
@@ -115,10 +117,9 @@ def display_intro_text():
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
-        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        print("\n" * 30)
         time.sleep(.1)
+        os.system('clear')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
@@ -129,10 +130,9 @@ def display_intro_text():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     time.sleep(3)
     for i in range(30,51):
-        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        print("\n" * 30)
         time.sleep(.1)
+        os.system('clear')
         original_color_r = original_color_r - 10
         original_color_g = original_color_g - 5
         original_color_b = original_color_b
@@ -157,10 +157,9 @@ def display_intro_text():
                                                                              |____/                         
     """
     for i in range(30,51):
-        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        print("\n" * 30)
         time.sleep(.1)
+        os.system('clear')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
@@ -210,15 +209,14 @@ def intro():
     original_color_r = 0
     original_color_g = 0
     original_color_b = 0
+    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
-        print("\n" * 50)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        print("\n" * 30)
         time.sleep(.1)
+        os.system('clear')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
-    os.system('clear')
     original_color_r = 255
     original_color_g = 119
     original_color_b = 0
@@ -279,10 +277,9 @@ def intro():
             original_color_b = 0
             os.system('clear')
             for i in range(30,51):
-                print("\n" * 50)
                 print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-                print("\n" * 30)
                 time.sleep(.1)
+                os.system('clear')
                 original_color_r = original_color_r - 10
                 original_color_g = original_color_g - 5
                 original_color_b = original_color_b
