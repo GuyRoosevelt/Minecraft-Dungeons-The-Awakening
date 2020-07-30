@@ -202,7 +202,8 @@ def intro():
                     print("Instructions:")
                     print("")
                     print("Enter an action on where the input prompts you. Input one of the letters listed. ")
-                    print("The test to the right of the colon describes the actions.")
+                    print("The text to the right of the colon describes the actions.")
+                    print("You can only use certain action at certain times.")
                     print("Normally, the winning tile is near the north, so try to move your character there to win!")
                     break
                 elif controls_prompt in ['V', 'v']:
