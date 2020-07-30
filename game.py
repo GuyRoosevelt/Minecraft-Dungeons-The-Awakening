@@ -6,11 +6,13 @@ import world
 import time
 import random
 import os
+import sys
 
 def get_available_actions(room, player):
     actions = OrderedDict()
     print("")
     print("Choose an action: ")    action_adder(actions, 'c', player.coords, "View coordinates")
+    action_adder(actions, 'm', menu(), "Open Menu")
     if player.inventory:
         action_adder(actions, 'i', player.print_inventory, "View inventory")
     if isinstance(room, world.TradingNPCs):
@@ -114,24 +116,26 @@ def display_intro_text():
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
+        print("\n" * 80)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
         time.sleep(.1)
-        os.system('clear')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
+    os.system('clear')
     original_color_r = 255
     original_color_g = 119
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     time.sleep(3)
     for i in range(30,51):
+        print("\n" * 80)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
         time.sleep(.1)
-        os.system('clear')
         original_color_r = original_color_r - 10
         original_color_g = original_color_g - 5
         original_color_b = original_color_b
+    os.system('clear')
     time.sleep(1)
     intro_title = """
     
@@ -152,12 +156,13 @@ def display_intro_text():
                                                                              |____/                         
     """
     for i in range(30,51):
+        print("\n" * 80)
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
         time.sleep(.1)
-        os.system('clear')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
+    os.system('clear')
     print('\033[38;2;255;119;0m' + intro_title)
 
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN + Style.BRIGHT + '█', printEnd = "\r"):
@@ -170,17 +175,52 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         print()
 
 def loadProgressBar():
-    items = list(range(0, 23))
+    items = list(range(0, 8))
     l = len(items)
     # Initial call to print 0% progress
     printProgressBar(0, l, prefix = 'Loading Assets...', suffix = 'Loaded', length = 40)
+    time.sleep(.3)
     for i, item in enumerate(items):
         time.sleep(random.random())
         printProgressBar(i + 1, l, prefix = '                      Loading...', suffix = 'Loaded', length = 50)
     time.sleep(.5)
 
 def intro():
+    intro_title = """
+    
+           __  __ _                            __ _     _____                                             
+          |  \/  (_)                          / _| |   |  __ \                                          _ 
+          | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
+          | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
+          | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
+          |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
+                                                                            __/ |                        
+            _______                                   _              _     |____/ 
+           |__   __| |              /\               | |            (_)                              
+              | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
+              | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
+              | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
+              |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
+                                                                              __/ |                        
+                                                                             |____/                         
+    """
     os.system('clear')
+    original_color_r = 0
+    original_color_g = 0
+    original_color_b = 0
+    for i in range(30,51):
+        print("\n" * 80)
+        print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        time.sleep(.1)
+        original_color_r = original_color_r + 10
+        original_color_g = original_color_g + 5
+        original_color_b = original_color_b
+    os.system('clear')
+    original_color_r = 255
+    original_color_g = 119
+    original_color_b = 0
+    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+    print(Style.RESET_ALL)
     loadProgressBar()
     os.system('clear')
     display_intro_text()
@@ -234,33 +274,73 @@ def intro():
             original_color_r = 255
             original_color_g = 119
             original_color_b = 0
-            intro_title = """
-            
-                   __  __ _                            __ _     _____                                             
-                  |  \/  (_)                          / _| |   |  __ \                                          _ 
-                  | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
-                  | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
-                  | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
-                  |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
-                                                                                    __/ |                        
-                   _______                                    _              _     |____/ 
-                  |__   __|  |              /\               | |            (_)                              
-                      | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
-                      | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
-                      | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
-                      |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
-                                                                                      __/ |                        
-                                                                                    |____/                         
-            """
             os.system('clear')
             for i in range(30,51):
+                print("\n" * 80)
                 print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
                 time.sleep(.1)
-                os.system('clear')
                 original_color_r = original_color_r - 10
                 original_color_g = original_color_g - 5
                 original_color_b = original_color_b
+            os.system('clear')
             print(Style.RESET_ALL)
             play()
         else:
             print("Invalid choice!")
+
+def menu():
+    original_color_r = 255
+    original_color_g = 119
+    original_color_b = 0
+    os.system('clear')
+    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+    print(Style.RESET_ALL)
+    while True:
+        print(Style.RESET_ALL)
+        print("R - Resume")
+        print("C - Controls")
+        print("L - View License")
+        print("Q - Quit Game")
+        start_menu = input("> ")
+        if start_menu in ['Q', 'q']:
+            sys.exit(0)
+        elif start_menu in ['C', 'c']:
+            while True:
+                print("Would you like to (V)iew controls, (R)ead instructions, or (Q)uit?")
+                controls_prompt = input("> ")
+                if controls_prompt in ['R', 'r']:
+                    print("")
+                    print("Instructions:")
+                    print("")
+                    print("Enter an action on where the input prompts you. Input one of the letters listed. ")
+                    print("The text to the right of the colon describes the actions.")
+                    print("You can only use certain action at certain times.")
+                    print("Normally, the winning tile is near the north, so try to move your character there to win!")
+                    break
+                elif controls_prompt in ['V', 'v']:
+                    print("")
+                    print("Controls:")
+                    print("")
+                    print("c: Views Coordinates")
+                    print("i: Opens Inventory. Inventory can be used to equip weapons. If weapon is not equipped, the strongest weapon is chosen.")
+                    print("n: Moves North. Only usable if player is not impeded.")
+                    print("s: Moves South. Only usable if player is not impeded.")
+                    print("e: Moves East. Only usable if player is not impeded.")
+                    print("w: Moves West. Only usable if player is not impeded.")
+                    print("t: Trades with the NPC. Only usable if player is at a NPC Trader Tile.")
+                    print("o: Opens chest. Only usable if player is at a Chest Tile.")
+                    print("h: Uses items to heal player. Only usable when player is damaged.")
+                    print("a: Uses equipped item to attack an enemy. Only usable if player is on a tile with an enemy that is alive.")
+                    break
+                elif controls_prompt in ['Q', 'q']:
+                    break
+                else:
+                    print("Invalid choice!")
+        elif start_menu in ['L', 'l']:
+            ObjRead = open("LICENSE.txt", "r")
+            txtContent = ObjRead.read(); 
+            print("")
+            print(txtContent)
+        elif start_menu in ['R', 'r']:
+            os.system('clear')
+            return

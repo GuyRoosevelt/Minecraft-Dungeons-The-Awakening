@@ -171,7 +171,7 @@ class Player:
         room.check_if_open(self)
 
     def coords(self):
-      print("You current location is at " + str(self.x) + "," + str(self.y))
+        print("You current location is at " + str(self.x) + "," + str(self.y))
 
     def move(self, dx, dy):
         self.x += dx
