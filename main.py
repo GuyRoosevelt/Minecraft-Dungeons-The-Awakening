@@ -1,4 +1,5 @@
 import game
-import colorama
+import os
 
+os.system('clear')
 game.intro()

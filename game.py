@@ -1,4 +1,4 @@
-import colorama
+iimport colorama
 from colorama import Fore, Style, Back
 from player import Player
 from collections import OrderedDict
@@ -6,7 +6,6 @@ import world
 import time
 import random
 import os
-import sys
 
 def get_available_actions(room, player):
     actions = OrderedDict()
@@ -88,7 +87,7 @@ def play():
             """)
             time.sleep(5)
 
-def fade_text():
+def display_intro_text():
     intro_title = """
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -109,8 +108,18 @@ def fade_text():
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     """
-
     print_text = intro_title
+    original_color_r = 0
+    original_color_g = 0
+    original_color_b = 0
+    print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+    for i in range(30,51):
+        print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
+        time.sleep(.1)
+        os.system('clear')
+        original_color_r = original_color_r + 10
+        original_color_g = original_color_g + 5
+        original_color_b = original_color_b
     original_color_r = 255
     original_color_g = 119
     original_color_b = 0
@@ -174,7 +183,7 @@ def intro():
     os.system('clear')
     loadProgressBar()
     os.system('clear')
-    fade_text()
+    display_intro_text()
     while True:
         print(Style.RESET_ALL)
         print("S - Start Game")
@@ -183,11 +192,38 @@ def intro():
         print("Q - Quit")
         start_menu = input("> ")
         if start_menu in ['Q', 'q']:
-            break
-            sys.exit()
+            return
         elif start_menu in ['C', 'c']:
-            print("")
-            print("Work In Progress!")
+            while True:
+                print("Would you like to (V)iew controls, (R)ead instructions, or (Q)uit?")
+                controls_prompt = input("> ")
+                if controls_prompt in ['R', 'r']:
+                    print("")
+                    print("Instructions:")
+                    print("")
+                    print("Enter an action on where the input prompts you. Input one of the letters listed. ")
+                    print("The test to the right of the colon describes the actions.")
+                    print("Normally, the winning tile is near the north, so try to move your character there to win!")
+                    break
+                elif controls_prompt in ['V', 'v']:
+                    print("")
+                    print("Controls:")
+                    print("")
+                    print("c: Views Coordinates")
+                    print("i: Opens Inventory. Inventory can be used to equip weapons. If weapon is not equipped, the strongest weapon is chosen.")
+                    print("n: Moves North. Only usable if player is not impeded.")
+                    print("s: Moves South. Only usable if player is not impeded.")
+                    print("e: Moves East. Only usable if player is not impeded.")
+                    print("w: Moves West. Only usable if player is not impeded.")
+                    print("t: Trades with the NPC. Only usable if player is at a NPC Trader Tile.")
+                    print("o: Opens chest. Only usable if player is at a Chest Tile.")
+                    print("h: Uses items to heal player. Only usable when player is damaged.")
+                    print("a: Uses equipped item to attack an enemy. Only usable if player is on a tile with an enemy that is alive.")
+                    break
+                elif controls_prompt in ['Q', 'q']:
+                    break
+                else:
+                    print("Invalid choice!")
         elif start_menu in ['L', 'l']:
             ObjRead = open("LICENSE.txt", "r")
             txtContent = ObjRead.read(); 
