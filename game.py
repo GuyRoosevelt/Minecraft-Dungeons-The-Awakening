@@ -6,6 +6,7 @@ import world
 import time
 import random
 import os
+from pygame import mixer
 
 def get_available_actions(room, player):
     actions = OrderedDict()
@@ -17,11 +18,15 @@ def get_available_actions(room, player):
         action_adder(actions, 'i', player.print_inventory, "View inventory")
     if isinstance(room, world.TradingNPCs):
         action_adder(actions, 't', player.trade, "Trade")
+    if isinstance(room, world.ChooseMap):
+        action_adder(actions, 't', player.travel, "Travel")
     if isinstance(room, world.Chest) and room.loot_claimed == False:
         action_adder(actions, 'o', player.openChest, "Open Chest")
     if isinstance(room, world.EnemyTile) and room.enemy.is_alive():
         action_adder(actions, 'a', player.attack, "Attack")
     else:
+        if isinstance(room, world.TrainingDummy) and room.enemy.is_alive():
+            action_adder(actions, 'a', player.attack, "Attack Dummy")
         if world.tile_at(room.x, room.y - 1):
             action_adder(actions, 'n', player.move_north, "Go north")
         if world.tile_at(room.x, room.y + 1):
@@ -54,9 +59,40 @@ def choose_action(room, player):
             print("Invalid action!")
             print("")
 
-def play():
+def play_sound(file):
+    mixer.init()
+    mixer.music.load(file)
+    mixer.music.set_volume(1)
+    mixer.music.play()
+
+def lobby():
+    r = random.randint(1,2)
+    if r == 1:
+        play_sound("Sounds\Dalarna.mp3")
+    else:
+        play_sound("Sounds\Halland.mp3")
+    world.world_map = [
+    ]
     world.world_dsl = world.lobby_dsl
-    os.system("clear")
+    os.system("cls")
+    print("Location: Camp")
+    world.parse_world_dsl()
+    player = Player()
+ 
+    while player.is_alive() and not player.victory:
+        room = world.tile_at(player.x, player.y)
+        print(room.intro_text())
+        print("")
+        room.modify_player(player)
+        if player.is_alive() and not player.victory:
+            choose_action(room, player)
+
+def play():
+    play_sound("Sounds\SquidCoast.mp3")
+    world.world_map = [
+    ]
+    world.world_dsl = world.squidcoast_dsl
+    os.system("cls")
     print("Objective: Escape from The Dungeons!")
     world.parse_world_dsl()
     player = Player()
@@ -78,8 +114,9 @@ def play():
                    | |__| | (_| | | | | | |  __/ | |__| |\ V /  __/ |   
                     \_____|\__,_|_| |_| |_|\___|  \____/  \_/ \___|_|   
             """)
-            time.sleep(5)
+            time.sleep(10)
         elif player.victory:
+            play_sound("Sounds\Finally.mp3")
             print("""
                   __     __          __          ___       _ 
                   \ \   / /          \ \        / (_)     | |
@@ -88,7 +125,7 @@ def play():
                      | | (_) | |_| |    \  /\  /  | | | | |_|
                      |_|\___/ \__,_|     \/  \/   |_|_| |_(_)
             """)
-            time.sleep(5)
+            time.sleep(10)
 
 def display_intro_text():
     intro_title = """
@@ -118,25 +155,27 @@ def display_intro_text():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.1)
-        os.system('clear')
+        time.sleep(.01)
+        os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
-    os.system('clear')
+    os.system('cls')
     original_color_r = 255
     original_color_g = 119
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-    time.sleep(3)
+    time.sleep(1)
+    os.system('cls')
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.1)
-        os.system('clear')
+        time.sleep(.01)
+        os.system('cls')
         original_color_r = original_color_r - 10
         original_color_g = original_color_g - 5
         original_color_b = original_color_b
-    os.system('clear')
+    os.system('cls')
+    play_sound("Sounds\Finnbacka.mp3")
     time.sleep(1)
     intro_title = """
     
@@ -158,12 +197,12 @@ def display_intro_text():
     """
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.1)
-        os.system('clear')
+        time.sleep(.01)
+        os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
-    os.system('clear')
+    os.system('cls')
     print('\033[38;2;255;119;0m' + intro_title)
 
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN + Style.BRIGHT + '█', printEnd = "\r"):
@@ -182,7 +221,7 @@ def loadProgressBar():
     printProgressBar(0, l, prefix = 'Loading Assets...', suffix = 'Loaded', length = 40)
     time.sleep(.3)
     for i, item in enumerate(items):
-        time.sleep(random.random())
+        time.sleep(.7)
         printProgressBar(i + 1, l, prefix = '                      Loading...', suffix = 'Loaded', length = 50)
     time.sleep(.5)
 
@@ -205,15 +244,15 @@ def intro():
                                                                               __/ |                        
                                                                              |____/                         
     """
-    os.system('clear')
     original_color_r = 0
     original_color_g = 0
     original_color_b = 0
+    play_sound("Sounds\Intro.mp3")
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.1)
-        os.system('clear')
+        time.sleep(.01)
+        os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
         original_color_b = original_color_b
@@ -223,7 +262,7 @@ def intro():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     print(Style.RESET_ALL)
     loadProgressBar()
-    os.system('clear')
+    os.system('cls')
     display_intro_text()
     while True:
         print(Style.RESET_ALL)
@@ -275,16 +314,17 @@ def intro():
             original_color_r = 255
             original_color_g = 119
             original_color_b = 0
-            os.system('clear')
+            os.system('cls')
             for i in range(30,51):
                 print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-                time.sleep(.1)
-                os.system('clear')
+                time.sleep(.01)
+                os.system('cls')
                 original_color_r = original_color_r - 10
                 original_color_g = original_color_g - 5
                 original_color_b = original_color_b
-            os.system('clear')
+            os.system('cls')
             print(Style.RESET_ALL)
-            play()
+            mixer.music.stop()
+            lobby()
         else:
             print("Invalid choice!")

@@ -2,7 +2,13 @@ import random
 import enemies
 import npc
 import math
+import game
+import time
+from pygame import mixer
+import os
 import items
+import colorama
+from colorama import Fore, Style, Back
 import player
 
 class MapTile:
@@ -16,6 +22,33 @@ class MapTile:
     def modify_player(self, player):
         pass
 
+class EmptyCampTile(MapTile):
+    def intro_text(self):
+      r = random.randint(1,4)
+      if r == 1:
+          return "An unremarkable part of the camp. You decide to look around more."
+      elif r == 2:
+          return "You step onto a patch of flat grass. Nothing seems to be remarkable about it."
+      elif r == 3:
+          return "You look around and see Training Dummies and Blacksmiths, and also a missions map. Maybe you should look around more."
+      else:
+          return "You decide to look around. Many things await! But for now, you are still at the camp."
+
+class TrainingDummy(MapTile):
+    def __init__(self, x, y):
+        self.enemy = enemies.TrainingDummy()
+        self.alive_text = "A Training Dummy stands in front of you, tied to a stick. You can attack it to test your weapon!"
+        self.dead_text = "You destroyed the Training Dummy"
+        self.enemy_attack = "stares at you"
+        super().__init__(x, y)
+        
+    def intro_text(self):
+        if self.enemy.is_alive():
+            text = self.alive_text
+        else:
+            text = self.dead_text
+        return text
+
 class StartTile(MapTile):
     def intro_text(self):
         return """
@@ -24,7 +57,14 @@ class StartTile(MapTile):
         You can make out four paths, each equally as dark
         and foreboding.
         """
-    
+
+class CampStartTile(MapTile):
+    def intro_text(self):
+        return """
+        You look around your camp. Many things lay there. A Blacksmith and a Wandering Trader sit behind their stalls.
+        You decide to explore the camp, before choosing a mission from the map in the center of the camp. 
+        """
+
 class EmptyCavePath(MapTile):
     def intro_text(self):
         return """
@@ -413,6 +453,67 @@ class RandomChest(Chest):
                 It turns out to be a Obisidian Chest!
                 """
 
+class ChooseMap(MapTile):
+    def playsound(self,file):
+        mixer.init()
+        mixer.music.load(file)
+        mixer.music.set_volume(1)
+        mixer.music.play()
+    
+    def choosemap(self, world):
+        mixer.init()
+        self.playsound("Sounds\Wanderlust.mp3")
+        mixer.music.set_volume(1)
+        mixer.music.play()
+        while True:
+            print("Would you like to (T)ravel or (Q)uit?")
+            user_input = input()
+            if user_input in ['Q', 'q']:
+                mixer.music.stop()
+                return
+            elif user_input in ['T', 't']:
+                while True:
+                    print("Where would you like to travel to? Areas unlocked: (S)quid Coast or (Q)uit?")
+                    user_input = input()
+                    if user_input in ['Q', 'q']:
+                        break
+                    elif user_input in ['S', 's']:
+                        def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN + Style.BRIGHT + '█', printEnd = "\r"):
+                            percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+                            filledLength = int(length * iteration // total)
+                            bar = fill * filledLength + '-' * (length - filledLength)
+                            print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
+                            # Print New Line on Complete
+                            if iteration == total: 
+                                print()
+                        os.system('cls')
+                        self.playsound("Sounds\Intertile.mp3")
+                        print("Traveling to:")
+                        print("Squid Coast")
+                        items = list(range(0, 8))
+                        l = len(items)
+                        # Initial call to print 0% progress
+                        printProgressBar(0, l, prefix = 'Loading Assets...', suffix = 'Loaded', length = 40)
+                        time.sleep(.3)
+                        for i, item in enumerate(items):
+                            time.sleep(.7)
+                            printProgressBar(i + 1, l, prefix = '                      Traveling...', suffix = 'Loaded', length = 50)
+                        time.sleep(.5)
+                        os.system('cls')
+                        mixer.music.stop()
+                        print(Style.RESET_ALL)
+                        game.play()
+                    else:
+                        print("Invalid choice!")
+            else:
+                print("Invalid choice!")
+                
+    def intro_text(self):
+            return """
+            A map stands on a pedestal. It shows directions to many locations.
+            It looks like you can travel with it.
+            """
+
 def tile_at(x, y):
     if x < 0 or y < 0:
         return None
@@ -436,17 +537,18 @@ tile_type_dict = {"VT": VictoryTile,
                   "RC": RandomChest,
                   "RG": RedstoneGolemTile,
                   "BS": BlacksmithTile,
+                  "CT": EmptyCampTile,
+                  "TD": TrainingDummy,
+                  "CM": ChooseMap,
+                  "CS": CampStartTile,
                   "NO": None}
 
 lobby_dsl = """
-|RC|RC|VT|RC|RC|
-|RC|RC|RG|RC|RC|
-|NO|NO|RC|NO|NO|
-|RC|RC|ST|RC|RC|
-|RC|RC|EN|NO|FE|
-"""
-
-world_dsl = """
+|RC|CT|FE|CT|CT|
+|CT|FE|CM|RC|TD|
+|CT|CT|CT|CT|TD|
+|CT|CT|CS|CT|TD|
+|CT|CT|CT|CT|CT|
 """
 
 squidcoast_dsl = """
@@ -460,11 +562,10 @@ squidcoast_dsl = """
 |FE|NO|EN|NO|FE|
 """
 
+world_dsl = """
+"""
+
 def is_dsl_valid(dsl):
-    if dsl.count("|ST|") != 1:
-        return False
-    if dsl.count("|VT|") == 0:
-        return False
     lines = dsl.splitlines()
     lines = [l for l in lines if l]
     pipe_counts = [line.count("|") for line in lines]
@@ -479,7 +580,6 @@ start_tile_location = None
 def parse_world_dsl():
     if not is_dsl_valid(world_dsl):
         raise SyntaxError("DSL is invalid!")
-    print(world_dsl)
     dsl_lines = world_dsl.splitlines()
     dsl_lines = [x for x in dsl_lines if x]
 
@@ -489,9 +589,10 @@ def parse_world_dsl():
         dsl_cells = [c for c in dsl_cells if c]
         for x, dsl_cell in enumerate(dsl_cells):
             tile_type = tile_type_dict[dsl_cell]
-            if tile_type == StartTile:
+            if tile_type == StartTile or tile_type == CampStartTile:
                 global start_tile_location
                 start_tile_location = x, y
             row.append(tile_type(x, y) if tile_type else None)
         world_map.append(row)
-        world_map.append(row)
+
+

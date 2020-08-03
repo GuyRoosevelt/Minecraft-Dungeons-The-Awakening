@@ -64,7 +64,7 @@ class Player:
                 print("")
 
     def print_inventory(self):
-        os.system("clear")
+        os.system("cls")
         while True:
             try:
                 best_weapon = self.to_equip
@@ -88,7 +88,7 @@ class Player:
             user_input = input()
             if user_input in ['Q', 'q']:
                 return
-                os.system("clear")
+                os.system("cls")
             elif user_input in ['E', 'e']:
                 print("")
                 print("Items to equip: ")
@@ -172,6 +172,10 @@ class Player:
     def openChest(self):
         room = world.tile_at(self.x, self.y)
         room.check_if_open(self)
+        
+    def travel(self):
+        room = world.tile_at(self.x, self.y)
+        room.choosemap(self)
 
     def coords(self):
         print("You current location is at " + str(self.x) + "," + str(self.y))
@@ -186,8 +190,8 @@ class Player:
               | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
               |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
                                                                                 __/ |                        
-               _______                                   _              _     |____/ 
-              |__   __| |               /\               | |            (_)                              
+                _______                                   _              _     |____/ 
+               |__   __| |              /\               | |            (_)                              
                   | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
                   | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
                   | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
@@ -198,7 +202,7 @@ class Player:
         original_color_r = 255
         original_color_g = 119
         original_color_b = 0
-        os.system('clear')
+        os.system('cls')
         while True:
             print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
             print(Style.RESET_ALL)
@@ -247,7 +251,7 @@ class Player:
                 print("")
                 print(txtContent)
             elif start_menu in ['R', 'r']:
-                os.system('clear')
+                os.system('cls')
                 return
 
     def move(self, dx, dy):

@@ -37,3 +37,9 @@ class RedstoneGolem(Enemy):
         self.name = "Redstone Golem"
         self.hp = 150
         self.damage = 7
+
+class TrainingDummy(Enemy):
+    def __init__(self):
+        self.name = "Training Dummy"
+        self.hp =  float('inf')
+        self.damage = 0

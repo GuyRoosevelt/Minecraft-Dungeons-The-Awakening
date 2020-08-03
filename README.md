@@ -74,5 +74,5 @@ Working on a release! Release v0.3 Beta is going to include:
 ## Pyinstaller Parameters
 ### If you want to build the source code urself, you can use this parameter.
 ``` python
-pyinstaller --noconfirm --onefile --nowindowed --icon=dungeons.ico game.py enemies.py items.py npc.py player.py world.py
+pyinstaller --noconfirm --log-level=WARN --onefile --add-data="Halland.mp3;sfx" --add-data="Finally.mp3;sfx" --add-data="Dalarna.mp3;sfx" --add-data="Finnbacka.mp3;sfx" --add-data="Intertile.mp3;sfx" --add-data="Intro.mp3;sfx" --add-data="Wanderlust.mp3;sfx" --add-data="SquidCoast.mp3;sfx" --add-data="LICENSE.txt;." --icon=dungeons.ico game.py game.py enemies.py items.py npc.py player.py world.py
 ```

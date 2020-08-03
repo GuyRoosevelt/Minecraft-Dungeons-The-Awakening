@@ -1,5 +1,5 @@
 import game
 import os
 
-os.system('clear')
+os.system('cls')
 game.intro()
