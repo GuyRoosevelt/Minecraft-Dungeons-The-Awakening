@@ -1,0 +1,10 @@
+            You see a bright light in the distance...
+            ... it grows as you get closer! It's sunlight!
+            Victory is yours!
+            
+                  __     __          __          ___       _ 
+                  \ \   / /          \ \        / (_)     | |
+                   \ \_/ /__  _   _   \ \  /\  / / _ _ __ | |
+                    \   / _ \| | | |   \ \/  \/ / | | '_ \| |
+                     | | (_) | |_| |    \  /\  /  | | | | |_|
+                     |_|\___/ \__,_|     \/  \/   |_|_| |_(_)
