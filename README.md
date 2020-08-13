@@ -71,6 +71,11 @@ Working on a release! Release v0.3 Beta is going to include:
 
 ##### BTW The strike-through ones on the release features are the ones that I have completed
 
+##Requirements
+```
+pip install -r requirements.txt
+```
+
 ## Pyinstaller Parameters
 ### If you want to build the source code urself, you can use this parameter.
 ``` python

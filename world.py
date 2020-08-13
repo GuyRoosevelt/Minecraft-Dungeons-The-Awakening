@@ -10,6 +10,35 @@ import items
 import colorama
 from colorama import Fore, Style, Back
 import player
+import sys
+import ctypes
+import msvcrt
+import subprocess
+from ctypes import wintypes
+
+def set_font(fonttype, fontsizex, fontsizey):
+    LF_FACESIZE = 32
+    STD_OUTPUT_HANDLE = -11
+    class COORD(ctypes.Structure):
+        _fields_ = [("X", ctypes.c_short), ("Y", ctypes.c_short)]
+    class CONSOLE_FONT_INFOEX(ctypes.Structure):
+        _fields_ = [("cbSize", ctypes.c_ulong),
+                    ("nFont", ctypes.c_ulong),
+                    ("dwFontSize", COORD),
+                    ("FontFamily", ctypes.c_uint),
+                    ("FontWeight", ctypes.c_uint),
+                    ("FaceName", ctypes.c_wchar * LF_FACESIZE)]
+    font = CONSOLE_FONT_INFOEX()
+    font.cbSize = ctypes.sizeof(CONSOLE_FONT_INFOEX)
+    font.nFont = 12
+    font.dwFontSize.X = fontsizex
+    font.dwFontSize.Y = fontsizey
+    font.FontFamily = 54
+    font.FontWeight = 400
+    font.FaceName = fonttype
+    handle = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+    ctypes.windll.kernel32.SetCurrentConsoleFontEx(
+            handle, ctypes.c_long(False), ctypes.pointer(font))
 
 class MapTile:
     def __init__(self, x, y):
@@ -454,17 +483,17 @@ class RandomChest(Chest):
                 """
 
 class ChooseMap(MapTile):
-    def playsound(self,file):
+    def playsound(self, file):
         mixer.init()
         mixer.music.load(file)
         mixer.music.set_volume(1)
-        mixer.music.play()
+        mixer.music.play(-1)
+
+    def print_file(self, path):
+        print(open(path, 'r').read())
     
     def choosemap(self, world):
-        mixer.init()
         self.playsound("Sounds\Wanderlust.mp3")
-        mixer.music.set_volume(1)
-        mixer.music.play()
         while True:
             print("Would you like to (T)ravel or (Q)uit?")
             user_input = input()
@@ -487,9 +516,10 @@ class ChooseMap(MapTile):
                             if iteration == total: 
                                 print()
                         os.system('cls')
+                        set_font("Courier New", 30, 30)
                         self.playsound("Sounds\Intertile.mp3")
-                        print("Traveling to:")
-                        print("Squid Coast")
+                        self.print_file('Art\\traveling_to.txt')
+                        self.print_file('Art\\squidcoast.txt')
                         items = list(range(0, 8))
                         l = len(items)
                         # Initial call to print 0% progress

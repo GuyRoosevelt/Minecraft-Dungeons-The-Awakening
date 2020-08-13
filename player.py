@@ -3,6 +3,7 @@ import world
 import random
 import math
 import sys
+import maps
 import colorama
 from colorama import Fore, Style, Back
 import os
@@ -10,12 +11,14 @@ import os
 class Player:
     def __init__(self):
         self.inventory = [items.Sword(),
+                          items.DebugStick(),
                           items.Apple()]
         self.x = world.start_tile_location[0]
         self.y = world.start_tile_location[1]
         self.enchantment_points = 1
         self.player_level = 1
-        self.hp = 100
+        self.maxhp = 100
+        self.hp = self.maxhp
         self.emerald = 25
         self.victory = False
 
@@ -31,14 +34,9 @@ class Player:
             return
 
         for i, item in enumerate(weapons, 1):
-            if len(item.ability) == 3:
-                print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.ability[1], item.ability_level[1], item.ability[2], item.ability_level[2], item.value))
-            elif len(item.ability) == 2:
-                print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.ability[1], item.ability_level[1], item.value))
-            elif len(item.ability) == 1:
-                print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.value))
-            else:
-                raise NotImplementedError("No more than 3 Enchantments!")
+            print("Choose an item to equip:")
+            print("")
+            print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | {}, Level {} | Value: {} emeralds".format(i, item.name, item.description, item.damage, item.ability["Enchantment 1"], item.ability["Enchantment 1 Level"], item.ability["Enchantment 2"], item.ability["Enchantment 2 Level"], item.ability["Enchantment 3"], item.ability["Enchantment 3 Level"], item.value))
 
         stop = False
         while not stop:
@@ -53,17 +51,12 @@ class Player:
                 print("Invalid choice, try again.")
                 print("")
                 for i, item in enumerate(weapons, 1):
-                    if len(item.ability) == 3:
-                        print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.ability[1], item.ability_level[1], item.ability[2], item.ability_level[2], item.value))
-                    elif len(item.ability) == 2:
-                        print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.ability[1], item.ability_level[1], item.value))
-                    elif len(item.ability) == 1:
-                        print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | Value: {} emeralds ".format(i, item.name, item.description, item.damage, item.ability[0], item.ability_level[0], item.value))
-                    else:
-                        raise NotImplementedError("No more than 3 Enchantments!")
+                    print("{}. {} --- {} | Damage: {} | Enchantments: {}, Level {} | {}, Level {} | {}, Level {} | Value: {} emeralds".format(i, item.name, item.description, item.damage, item.ability["Enchantment 1"], item.ability["Enchantment 1 Level"], item.ability["Enchantment 2"], item.ability["Enchantment 2 Level"], item.ability["Enchantment 3"], item.ability["Enchantment 3 Level"], item.value))
                 print("")
+        return
 
     def print_inventory(self):
+        #max hp increases for each level by * 2.5
         os.system("cls")
         while True:
             try:
@@ -72,7 +65,7 @@ class Player:
                 best_weapon = self.most_powerful_weapon()
             print("Player Level {}".format(self.player_level))
             print("")
-            print("Health Points: {}".format(self.hp))
+            print("Health Points: {}/{}".format(self.hp, self.maxhp))
             print("")
             print("Inventory:")
             for item in self.inventory:
@@ -87,16 +80,33 @@ class Player:
             print("Would you like to (E)quip a weapon, or (Q)uit?")
             user_input = input()
             if user_input in ['Q', 'q']:
-                return
                 os.system("cls")
+                return
             elif user_input in ['E', 'e']:
                 print("")
                 print("Items to equip: ")
                 print("")
                 self.equip_weapons()
-                return self.to_equip
             else:
                 print("Invalid choice!")
+
+    def view_inventory(self):
+        try:
+            best_weapon = self.to_equip
+        except:
+            best_weapon = self.most_powerful_weapon()
+        print("Player Level {}".format(self.player_level))
+        print("")
+        print("Inventory:")
+        for item in self.inventory:
+           print('* ' + str(item))                   
+        print("")
+        print("Emeralds: {}".format(self.emerald))
+        print("")
+        print("Enchantment Points: {}".format(self.enchantment_points))
+        print("")
+        print("Your equipped weapon is your {}".format(best_weapon.name))
+        print("")
 
     def most_powerful_weapon(self):
         max_damage = 0
@@ -122,7 +132,7 @@ class Player:
         damagehi = best_weapon.damage + math.ceil(best_weapon.damage * 0.25)
         damagelo = best_weapon.damage - math.ceil(best_weapon.damage * 0.25)
         damage = random.randint(damagelo, damagehi + 1)
-        print("You attack the {} with your {}!".format(enemy.name, best_weapon.name))
+        print("You {} the {} with your {}!".format(best_weapon.attack, enemy.name, best_weapon.name))
         print("")
         print("You do {} damage!".format(damage))
         print("")
@@ -225,7 +235,7 @@ class Player:
                         print("The text to the right of the colon describes the actions.")
                         print("You can only use certain action at certain times.")
                         print("Normally, the winning tile is near the north, so try to move your character there to win!")
-                        break
+                        return
                     elif controls_prompt in ['V', 'v']:
                         print("")
                         print("Controls:")
@@ -240,9 +250,9 @@ class Player:
                         print("o: Opens chest. Only usable if player is at a Chest Tile.")
                         print("h: Uses items to heal player. Only usable when player is damaged.")
                         print("a: Uses equipped item to attack an enemy. Only usable if player is on a tile with an enemy that is alive.")
-                        break
+                        return
                     elif controls_prompt in ['Q', 'q']:
-                        break
+                        return
                     else:
                         print("Invalid choice!")
             elif start_menu in ['L', 'l']:
