@@ -71,7 +71,7 @@ Working on a release! Release v0.3 Beta is going to include:
 
 ##### BTW The strike-through ones on the release features are the ones that I have completed
 
-##Requirements
+## Requirements
 ```
 pip install -r requirements.txt
 ```
