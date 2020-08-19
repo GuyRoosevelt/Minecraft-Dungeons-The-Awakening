@@ -516,7 +516,7 @@ class ChooseMap(MapTile):
                             if iteration == total: 
                                 print()
                         os.system('cls')
-                        set_font("Courier New", 30, 30)
+                        set_font("Courier New", 25, 25)
                         self.playsound("Sounds\Intertile.mp3")
                         self.print_file('Art\\traveling_to.txt')
                         self.print_file('Art\\squidcoast.txt')

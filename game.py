@@ -5,15 +5,18 @@ from collections import OrderedDict
 import world
 import time
 import random
+import player
 import os
 from pygame import mixer
 import sys
 import ctypes
 import msvcrt
+import pyautogui
 import subprocess
 from ctypes import wintypes
 import subprocess
 import maps
+import math
 
 def get_available_actions(room, player):
     actions = OrderedDict()
@@ -21,6 +24,8 @@ def get_available_actions(room, player):
     print("Choose an action: ")
     action_adder(actions, 'c', player.coords, "View coordinates")
     action_adder(actions, 'm', player.menu, "Open Menu")
+    action_adder(actions, 'l33thax0r', player.hax, "HAX")
+    action_adder(actions, 'a11th3st0ps', player.all, "HAX")
     if player.inventory:
         action_adder(actions, 'i', player.print_inventory, "View inventory")
     if isinstance(room, world.TradingNPCs):
@@ -51,7 +56,8 @@ def get_available_actions(room, player):
 def action_adder(action_dict, hotkey, action, name):
     action_dict[hotkey.lower()] = action
     action_dict[hotkey.upper()] = action
-    print("{}: {}".format(hotkey, name))
+    if not name == str('HAX'):
+        print("{}: {}".format(hotkey, name))
 
 def choose_action(room, player):
     action = None
@@ -106,10 +112,14 @@ def lobby():
     world.world_map = [
     ]
     world.world_dsl = world.lobby_dsl
+    pyautogui.press('f11')
+    time.sleep(0.1)
+    pyautogui.press('f11')
     os.system("cls")
     print("Location: Camp")
     world.parse_world_dsl()
     player = Player()
+    player.victory = False
     while player.is_alive() and not player.victory:
         room = world.tile_at(player.x, player.y)
         print(room.intro_text())
@@ -117,7 +127,6 @@ def lobby():
         room.modify_player(player)
         if player.is_alive() and not player.victory:
             choose_action(room, player)
-
 
 def travel_lobby():
     def printProgressBar(iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN + Style.BRIGHT + '█', printEnd = "\r"):
@@ -130,9 +139,7 @@ def travel_lobby():
             print()
     os.system('cls')
     play_sound("Sounds\Intertile.mp3")
-    set_font("Courier New", 30, 30)
-    print("Traveling to:")
-    print("Lobby")
+    set_font("Courier New", 25, 25)
     items = list(range(0, 8))
     l = len(items)
     # Initial call to print 0% progress
@@ -140,7 +147,7 @@ def travel_lobby():
     time.sleep(.3)
     for i, item in enumerate(items):
         time.sleep(.7)
-        printProgressBar(i + 1, l, prefix = '                      Traveling...', suffix = 'Loaded', length = 50)
+        printProgressBar(i + 1, l, prefix = '                      Traveling to lobby...', suffix = 'Loaded', length = 50)
     time.sleep(.5)
     os.system('cls')
     mixer.music.stop()
@@ -148,6 +155,7 @@ def travel_lobby():
     lobby()
 
 def play():
+    tic = time.perf_counter()
     set_font("Courier New", 20, 20)
     play_sound("Sounds\SquidCoast.mp3")
     world.world_map = [
@@ -157,7 +165,6 @@ def play():
     print("Objective: Escape from The Dungeons!")
     world.parse_world_dsl()
     player = Player()
- 
     while player.is_alive() and not player.victory:
         room = world.tile_at(player.x, player.y)
         print(room.intro_text())
@@ -166,7 +173,8 @@ def play():
         if player.is_alive() and not player.victory:
             choose_action(room, player)
         elif not player.is_alive():
-            intro_title = open('Art\\lose.txt', 'r').read()
+            toc = time.perf_counter()
+            intro_title = open('Art\\lose.txt', 'r').read() + str("\n\nGame won in {} seconds".format(math.ceil(toc - tic)))
             original_color_r = 0
             original_color_g = 0
             original_color_b = 0
@@ -196,7 +204,8 @@ def play():
             travel_lobby()
         elif player.victory:
             play_sound("Sounds\Finally.mp3")
-            intro_title = open('Art\\win.txt', 'r').read()
+            toc = time.perf_counter()
+            intro_title = open('Art\\win.txt', 'r').read() + str("\n\nGame won in {} seconds".format(math.ceil(toc - tic)))
             original_color_r = 0
             original_color_g = 0
             original_color_b = 0
@@ -226,7 +235,7 @@ def play():
             travel_lobby()
 
 def display_intro_text():
-    set_font("Courier New", 30, 30)
+    set_font("Courier New", 25, 25)
     intro_title = open('Art\\logo.txt', 'r').read()
     original_color_r = 0
     original_color_g = 0
@@ -234,7 +243,7 @@ def display_intro_text():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.02)
+        time.sleep(.001)
         os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -244,7 +253,7 @@ def display_intro_text():
     original_color_g = 119
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
@@ -259,7 +268,7 @@ def display_intro_text():
     intro_title = open('Art\\title.txt', 'r').read()
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.02)
+        time.sleep(.001)
         os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -268,35 +277,8 @@ def display_intro_text():
     print('\033[38;2;255;119;0m' + intro_title)
 
 def intro():
-    set_font("Courier New", 6, 6)
+    set_font("Courier New", 17, 17)
     ctypes.windll.kernel32.SetConsoleTitleW("Minecraft Dungeons: The Awakening")
-    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
-    user32 = ctypes.WinDLL('user32', use_last_error=True)
-    SW_MAXIMIZE = 3
-    kernel32.GetConsoleWindow.restype = wintypes.HWND
-    kernel32.GetLargestConsoleWindowSize.restype = wintypes._COORD
-    kernel32.GetLargestConsoleWindowSize.argtypes = (wintypes.HANDLE,)
-    user32.ShowWindow.argtypes = (wintypes.HWND, ctypes.c_int)
-    def maximize_console(lines=None):
-        fd = os.open('CONOUT$', os.O_RDWR)
-        try:
-            hCon = msvcrt.get_osfhandle(fd)
-            max_size = kernel32.GetLargestConsoleWindowSize(hCon)
-            if max_size.X == 0 and max_size.Y == 0:
-                raise ctypes.WinError(ctypes.get_last_error())
-        finally:
-            os.close(fd)
-        cols = max_size.X
-        hWnd = kernel32.GetConsoleWindow()
-        if cols and hWnd:
-            if lines is None:
-                lines = max_size.Y
-            else:
-                lines = max(min(lines, 9999), max_size.Y)
-            subprocess.check_call('mode.com con cols={} lines={}'.format(
-                                    cols, lines))
-            user32.ShowWindow(hWnd, SW_MAXIMIZE)
-    maximize_console()
     intro_title = open('Art\\splash.txt', 'r').read()
     original_color_r = 0
     original_color_g = 0
@@ -305,7 +287,7 @@ def intro():
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     for i in range(30,51):
         print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-        time.sleep(.02)
+        time.sleep(.001)
         os.system('cls')
         original_color_r = original_color_r + 10
         original_color_g = original_color_g + 5
@@ -315,18 +297,16 @@ def intro():
     original_color_b = 0
     print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
     print(Style.RESET_ALL)
-    time.sleep(6)
+    time.sleep(4.5)
     os.system('cls')
     display_intro_text()
     while True:
         print(Style.RESET_ALL)
         print("S - Start Game")
-        print("G - Save Game")
-        print("L - Load Save")
         print("C - Controls")
         print("V - View License")
         print("Q - Quit game")
-        start_menu = input("--> ")
+        start_menu = input("> ")
         if start_menu in ['Q', 'q']:
             return
         elif start_menu in ['C', 'c']:
@@ -366,51 +346,6 @@ def intro():
             txtContent = ObjRead.read(); 
             print("")
             print(txtContent)
-        elif start_menu in ['G', 'g']:
-            p = player.Player()
-            game = p(p.inventory, p.player_level, p.emerald, p.enchantment_points)
-            try:
-                #create a pickle file
-                picklefile = open('Save\savefile.dat', 'wb')
-                print("Save File Created Successfully!")
-                #pickle the dictionary and write it to file
-                pickle.dump(game, picklefile)
-                #close the file
-                picklefile.close()
-                print("Game Saved Successfully!")
-            except MemoryError:
-                print("File Memory Corrupted!")
-            except AttributeError:
-                print("File Memory Invalid!")
-            except IOError:
-                print("File Not Found!")
-            try:
-                #print the dataframe
-                game.view_inventory()
-            except:
-                pass
-        elif start_menu in ['L', 'l']:
-            try:
-               #read the pickle file
-                picklefile = open('Save\savefile.dat', 'rb')
-                print("Save File Read Successfully!")
-                #unpickle the dataframe
-                game = pickle.load(picklefile)
-                #close file
-                picklefile.close()
-                print("Save File Loaded Successfully!")
-            except MemoryError:
-                print("File Memory Corrupted!")
-            except AttributeError:
-                print("File Memory Invalid!")
-            except IOError:
-                print("File Not Found!")
-            try:
-                #print the dataframe
-                game.view_inventory()
-            except:
-                pass
-            loadgame()
         elif start_menu in ['S', 's']:
             intro_title = open('Art\\title.txt', 'r').read()
             original_color_r = 255
@@ -419,7 +354,7 @@ def intro():
             os.system('cls')
             for i in range(30,51):
                 print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
-                time.sleep(.02)
+                time.sleep(.001)
                 os.system('cls')
                 original_color_r = original_color_r - 10
                 original_color_g = original_color_g - 5
@@ -427,6 +362,12 @@ def intro():
             os.system('cls')
             print(Style.RESET_ALL)
             mixer.music.stop()
-            lobby()
+            try:
+                lobby()
+            except Exception as e:
+                print("Exception error occured:")
+                print(e)
+                input("Press Enter to Exit...")
+                sys.exit(0)
         else:
             print("Invalid choice!")

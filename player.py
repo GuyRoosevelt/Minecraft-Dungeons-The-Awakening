@@ -3,15 +3,19 @@ import world
 import random
 import math
 import sys
+import dill as pickle
+import pyAesCrypt
 import maps
 import colorama
 from colorama import Fore, Style, Back
+import string
 import os
+import game
+from os import path
 
 class Player:
     def __init__(self):
         self.inventory = [items.Sword(),
-                          items.DebugStick(),
                           items.Apple()]
         self.x = world.start_tile_location[0]
         self.y = world.start_tile_location[1]
@@ -21,6 +25,8 @@ class Player:
         self.hp = self.maxhp
         self.emerald = 25
         self.victory = False
+        self.bufferSize = 64 * 1024
+        self.passwordtxt = ''.join((random.choice('qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()') for i in range(20)))
 
     def is_alive(self):
         return self.hp > 0
@@ -89,24 +95,6 @@ class Player:
                 self.equip_weapons()
             else:
                 print("Invalid choice!")
-
-    def view_inventory(self):
-        try:
-            best_weapon = self.to_equip
-        except:
-            best_weapon = self.most_powerful_weapon()
-        print("Player Level {}".format(self.player_level))
-        print("")
-        print("Inventory:")
-        for item in self.inventory:
-           print('* ' + str(item))                   
-        print("")
-        print("Emeralds: {}".format(self.emerald))
-        print("")
-        print("Enchantment Points: {}".format(self.enchantment_points))
-        print("")
-        print("Your equipped weapon is your {}".format(best_weapon.name))
-        print("")
 
     def most_powerful_weapon(self):
         max_damage = 0
@@ -190,25 +178,109 @@ class Player:
     def coords(self):
         print("You current location is at " + str(self.x) + "," + str(self.y))
 
-    def menu(self):
-        intro_title = """
+    def encrypt(self, file, outfile):
+        print("Password File Loaded Successfully!")
+        passwordfile = open('Save\password.bin', 'rb')
+        password = pickle.load(passwordfile)
+        # encrypt
+        print("Game File Encrypted Successfully!")
+        pyAesCrypt.encryptFile(file, outfile, password, self.bufferSize)
+        os.remove(file) 
         
-               __  __ _                            __ _     _____                                             
-              |  \/  (_)                          / _| |   |  __ \                                          _ 
-              | \  / |_ _ __   ___  ___ _ __ __ _| |_| |_  | |  | |_   _ _ __   __ _  ___  ___  _ __  ___  (_)
-              | |\/| | | '_ \ / _ \/ __| '__/ _` |  _| __| | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|    
-              | |  | | | | | |  __/ (__| | | (_| | | | |_  | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  _ 
-              |_|__|_|_|_| |_|\___|\___|_|  \__,_|_|  \__| |_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/ (_)
-                                                                                __/ |                        
-                _______                                   _              _     |____/ 
-               |__   __| |              /\               | |            (_)                              
-                  | |  | |__   ___     /  \__      ____ _| | _____ _ __  _ _ __   ____                       
-                  | |  | '_ \ / _ \   / /\ \ \ /\ / / _` | |/ / _ \ '_ \| | '_ \ / _` |                        
-                  | |  | | | |  __/  / ____ \ V  V / (_| |   <  __/ | | | | | | | (_| |                        
-                  |_|  |_| |_|\___| /_/    \_\_/\_/ \__,_|_|\_\___|_| |_|_|_| |_|\__, |                        
-                                                                                  __/ |                        
-                                                                                |____/                         
-        """
+    def decrypt(self, file, outfile):
+        print("Password File Loaded Successfully!")
+        passwordfile = open('Save\password.bin', 'rb')
+        password = pickle.load(passwordfile)
+        # decrypt
+        print("Password Correct!")
+        pyAesCrypt.decryptFile(file, outfile, password, self.bufferSize)
+        os.remove(file)
+        print("Game File Decrypted Successfully!")
+        
+    def save(self):
+        try:
+            inventory = self.inventory
+            maxhp = self.maxhp
+            emerald = self.emerald
+            enchantment_points = self.enchantment_points
+            player_level = self.player_level
+            #Create Password File
+            print("Password File Created Successfully!")
+            passwordfile = file = open('Save\password.bin', 'wb')
+            pickle.dump(self.passwordtxt, passwordfile)
+            passwordfile.close()
+            #Close the file
+            gamesave = {
+                'inventory' : inventory,
+                'maxhp' : maxhp,
+                'emerald' : emerald,
+                'enchantment points' : enchantment_points,
+                'player level' : player_level
+            }
+            try:
+                print("Game Save Already Exists So Overwriting...")
+                os.remove('Save\savefile.sav')
+            except:
+                pass
+            picklefile = open('Save\savefile.dat', 'wb')
+            print("Save Files Created Successfully!")
+            #pickle the dictionary and write it to file
+            pickle.dump(gamesave, picklefile)
+            print("Game Saved Successfully!")
+            #close the file
+            picklefile.close()
+            self.encrypt('Save\savefile.dat', 'Save\savefile.sav')
+        except MemoryError:
+            print("File Memory Corrupted!")
+        except AttributeError:
+            print("File Memory Invalid!")
+        except IOError:
+            print("File Not Found!")
+        except Exception as e:
+            print("Exception error occured:")
+            print(e)
+        
+    def load(self):
+        try:
+            try:
+                self.decrypt('Save\savefile.sav', 'Save\savefile.dat')
+                print("Save Files Decrypted Successfully!")
+            except:
+                pass
+            #read the pickle file
+            picklefile = open('Save\savefile.dat', 'rb')
+            print("Save Files Read Successfully!")
+            #unpickle the dataframe
+            game = pickle.load(picklefile)
+            self.inventory = game['inventory']
+            print("Inventory Loaded Successfully!")
+            self.maxhp = game['maxhp']
+            print("Max HP Loaded Successfully!")
+            self.emerald = game['emerald']
+            print("Emeralds Loaded Successfully!")
+            self.enchantment_points = game['enchantment points']
+            print("Enchantment Points Loaded Successfully!")
+            self.player_level = game['player level']
+            print("Player Level Loaded Successfully!")
+            print("Game Save Loaded Successfully!")
+            #close file
+            picklefile.close()
+            try:
+                self.encrypt('Save\savefile.dat', 'Save\savefile.sav')
+            except:
+                pass
+        except MemoryError:
+            print("File Memory Corrupted!")
+        except AttributeError:
+            print("File Memory Invalid!")
+        except IOError:
+            print("File Not Found!")
+        except Exception as e:
+            print("Exception error occured:")
+            print(e)
+            
+    def menu(self):
+        intro_title = open('Art\\title.txt', 'r').read()
         original_color_r = 255
         original_color_g = 119
         original_color_b = 0
@@ -217,12 +289,20 @@ class Player:
             print('\033[38;2;%d;%d;%dm' % (original_color_r, original_color_g, original_color_b) + intro_title)
             print(Style.RESET_ALL)
             print("R - Resume")
+            print("G - Save Game")
+            print("L - Load Save")
             print("C - Controls")
             print("L - View License")
             print("Q - Quit Game")
             start_menu = input("> ")
             if start_menu in ['Q', 'q']:
-                sys.exit(0)
+                while True:
+                    print("Are you sure you want to exit? (Y)es or (N)o?")
+                    quit_menu = input("> ")
+                    if quit_menu in ['Y', 'y']:
+                        sys.exit(0)
+                    elif quit_menu in ['N', 'n']:
+                        break
             elif start_menu in ['C', 'c']:
                 while True:
                     print("Would you like to (V)iew controls, (R)ead instructions, or (Q)uit?")
@@ -235,7 +315,7 @@ class Player:
                         print("The text to the right of the colon describes the actions.")
                         print("You can only use certain action at certain times.")
                         print("Normally, the winning tile is near the north, so try to move your character there to win!")
-                        return
+                        break
                     elif controls_prompt in ['V', 'v']:
                         print("")
                         print("Controls:")
@@ -250,12 +330,56 @@ class Player:
                         print("o: Opens chest. Only usable if player is at a Chest Tile.")
                         print("h: Uses items to heal player. Only usable when player is damaged.")
                         print("a: Uses equipped item to attack an enemy. Only usable if player is on a tile with an enemy that is alive.")
-                        return
+                        break
                     elif controls_prompt in ['Q', 'q']:
-                        return
+                        break
                     else:
                         print("Invalid choice!")
+            elif start_menu in ['G', 'g']:
+                self.save()
+                try:
+                    inventory = self.inventory
+                    maxhp = self.maxhp
+                    emerald = self.emerald
+                    enchantment_points = self.enchantment_points
+                    player_level = self.player_level
+                    #print the dataframe
+                    print("")
+                    print("----------Save Data----------")
+                    print("Player Level {}".format(player_level))
+                    print("")
+                    print("Max Hp: {}".format(maxhp))
+                    print("")
+                    print("Inventory:")
+                    for item in inventory:
+                       print('* ' + str(item))                   
+                    print("")
+                    print("Emeralds: {}".format(emerald))
+                    print("")
+                    print("Enchantment Points: {}".format(enchantment_points))
+                    print("")
+                except:
+                    pass
             elif start_menu in ['L', 'l']:
+                self.load()
+                try:
+                    print("")
+                    print("----------Player Data----------")
+                    print("Player Level {}".format(self.player_level))
+                    print("")
+                    print("Max Hp: {}".format(self.maxhp))
+                    print("")
+                    print("Inventory:")
+                    for item in self.inventory:
+                       print('* ' + str(item))                   
+                    print("")
+                    print("Emeralds: {}".format(self.emerald))
+                    print("")
+                    print("Enchantment Points: {}".format(self.enchantment_points))
+                    print("")
+                except:
+                    pass
+            elif start_menu in ['V', 'v']:
                 ObjRead = open("LICENSE.txt", "r")
                 txtContent = ObjRead.read(); 
                 print("")
@@ -263,6 +387,8 @@ class Player:
             elif start_menu in ['R', 'r']:
                 os.system('cls')
                 return
+            else:
+                print("Invalid choice!")
 
     def move(self, dx, dy):
         self.x += dx
@@ -280,4 +406,53 @@ class Player:
     def move_west(self):
         self.move(dx=-1, dy=0)
 
-    
+    def hax(self):
+        self.inventory.append(items.DebugStick())
+        self.emerald = self.emerald + 100000
+        self.maxhp = 10000
+        self.hp = self.maxhp
+        self.player_level = 100
+        self.enchantment_points = 1000
+        print("----------Inventory----------")
+        print("Player Level {}".format(self.player_level))
+        print("")
+        print("Max Hp: {}".format(self.maxhp))
+        print("")
+        print("Inventory:")
+        for item in self.inventory:
+           print('* ' + str(item))                   
+        print("")
+        print("Emeralds: {}".format(self.emerald))
+        print("")
+        print("Enchantment Points: {}".format(self.enchantment_points))
+        print("")
+
+    def all(self):
+        self.inventory.append(items.DebugStick())
+        self.inventory.append(items.Daggers())
+        self.inventory.append(items.SoulKnife())
+        self.inventory.append(items.Cutlass())
+        self.inventory.append(items.Apple())
+        self.inventory.append(items.HealingPotion())
+        self.inventory.append(items.Porkchop())
+        self.inventory.append(items.Apple())
+        self.inventory.append(items.HealingPotion())
+        self.inventory.append(items.Porkchop())
+        self.emerald = self.emerald + 999999999
+        self.maxhp = 10000000
+        self.hp = self.maxhp
+        self.player_level = 1000
+        self.enchantment_points = 9999
+        print("----------Inventory----------")
+        print("Player Level {}".format(self.player_level))
+        print("")
+        print("Max Hp: {}".format(self.maxhp))
+        print("")
+        print("Inventory:")
+        for item in self.inventory:
+           print('* ' + str(item))                   
+        print("")
+        print("Emeralds: {}".format(self.emerald))
+        print("")
+        print("Enchantment Points: {}".format(self.enchantment_points))
+        print("")
