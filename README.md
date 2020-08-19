@@ -6,7 +6,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org)
 [![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FGuyRoosevelt%2FMinecraft-Dungeons-The-Awakening)](https://twitter.com/GuyRoosevelt1)
 
-![Algorithm schema](Art\dungeons.ico)
+![Algorithm schema](Art//dungeons.ico)
 
 Minecraft Dungeons Text Adventure Game!
 
