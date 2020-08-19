@@ -6,12 +6,11 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org)
 [![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FGuyRoosevelt%2FMinecraft-Dungeons-The-Awakening)](https://twitter.com/GuyRoosevelt1)
 
-![Algorithm schema](dungeons.ico)
+![Algorithm schema](\Art\dungeons.ico)
 
 Minecraft Dungeons Text Adventure Game!
 
-## Mini Release! 0.3 Alpha!:
-This is just a preview! Not really a release:
+## 0.5 Beta!:
 
 - Chests (3 Random Variants!)
 - Better Economy
@@ -26,10 +25,18 @@ This is just a preview! Not really a release:
 - Advanced Economy
 - Advanced Fighting
 - Abilities!
+- Saving and Loading Saves!
+- Game timer
+- Save File Encrypting
+- Infinite Game Loop
+- Advanced menus
+- New Splash Screen
+- Bug Fixes
+- Full Screen Mode
 - And More!
 
 ## Repl.it 
-[![Run on Repl.it](https://repl.it/badge/github/Glank/Java-Games)](https://repl.it/@flappymagikarp/Minecraft-Dungeons-The-Awakening)
+[![Run on Repl.it](https://repl.it/badge/github/Glank/Java-Games)](https://repl.it/@flappymagikarp/)
 
 ## Github
 [![Open on Github](https://img.shields.io/badge/Open-On%20Github-lightgrey?logo=github&style=flat)](https://github.com/GuyRoosevelt/Minecraft-Dungeons-The-Awakening)
@@ -54,7 +61,7 @@ None!
 ![Gameplay- Boss](https://i.ibb.co/qW4JR9g/Annotation-2020-07-28-102504.png)
 
 ## Releases:
-Working on a release! Release v0.3 Beta is going to include:
+Working on a release! Release v0.6 Beta is going to include:
 - Loot rooms
 - ~~Chests~~
 - Armor
@@ -79,5 +86,4 @@ pip install -r requirements.txt
 ## Pyinstaller Parameters
 ### If you want to build the source code urself, you can use this parameter.
 ``` python
-pyinstaller --noconfirm --log-level=WARN --onefile --add-data="Halland.mp3;sfx" --add-data="Finally.mp3;sfx" --add-data="Dalarna.mp3;sfx" --add-data="Finnbacka.mp3;sfx" --add-data="Intertile.mp3;sfx" --add-data="Intro.mp3;sfx" --add-data="Wanderlust.mp3;sfx" --add-data="SquidCoast.mp3;sfx" --add-data="LICENSE.txt;." --icon=dungeons.ico game.py game.py enemies.py items.py npc.py player.py world.py
 ```
