@@ -57,7 +57,7 @@ None!
 >*You can make out four paths, each equally as dark and foreboding.*
 
 ## Youtube Video
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/D1RoKIazxo/0.jpg)](http://www.youtube.com/watch?v=D1RoKIazxo "Minecraft Dungeons: The Awakening Trailer")
+[![Minecraft Dungeons: The Awakening Trailer](http://img.youtu.be/vi/D1RoKIazxo/0.jpg)](http://www.youtu.be/watch?v=D1RoKIazxo "Minecraft Dungeons: The Awakening Trailer")
 
 ### Chest Update!
 ![Gameplay- Chests](https://i.ibb.co/Gv0fpWn/Annotation-2020-07-28-102049.png)
