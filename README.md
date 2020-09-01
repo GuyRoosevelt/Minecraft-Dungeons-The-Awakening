@@ -79,6 +79,7 @@ Working on a release! Release v0.6 Beta is going to include:
 - Mob abilities
 - ~~Map extensions~~
 - Multiple Maps
+- Classes
 - And More!
 
 ##### BTW The strike-through ones on the release features are the ones that I have completed
