@@ -12,6 +12,8 @@ Minecraft Dungeons Text Adventure Game!
 
 Minecraft Dungeons: The Awakening is a text-based adventure game that is modeled off of old games like Zork or Dungeons & Dragons. It's storyline is based off of Microsoft and Mojang's Minecraft Dungeons. You control a character that moves through dungeons, defeats monsters, and collects treasure. The RPG maker lesson inspired me to make this. This game requires python 3.8, and requires multiple modules that can be installed via requirements.txt. This game cannot be run on repl.it, as the modules are not compatible. This is a game meant for Windows. All logos, music and names belong to Microsoft and Mojang. Music is by Peter Hont.
 
+#### There's over 1700 lines of code!
+
 ## 0.5 Beta!:
 
 - Chests (3 Random Variants!)
